@@ -9,13 +9,13 @@ class IDevice
     virtual std::string show_name() = 0;
 };
 
-class RealVirtualDevice1: public IDevice
+class Memory: public IDevice
 {
+    uint8_t mem[0x800];
     public:
-    uint8_t mem[20];
     void show_mem()
     {
-        std::cout << "Show Device 1 mem" << std::endl;
+        std::cout << "Show Memory" << std::endl;
         for(auto a: mem)
         {
             std::cout << (int)a << " ";
@@ -34,38 +34,9 @@ class RealVirtualDevice1: public IDevice
     
     std::string show_name()
     {
-        return "RealVirtualDevice1";
+        return "Memory";
     }
     
-};
-
-class RealVirtualDevice2: public IDevice
-{
-    public:
-    uint8_t mem[20];
-    void show_mem()
-    {
-        std::cout << "Show Device 2 mem" << std::endl;
-        for(auto a: mem)
-        {
-            std::cout << (int)a << " ";
-        }
-        std::cout << std::endl;
-    }
-    
-    uint8_t read(uint16_t address)
-    {
-        return mem[address];
-    }
-    void write(uint16_t address, uint8_t value)
-    {
-        mem[address] = value;
-    }
-    
-    std::string show_name()
-    {
-        return "RealVirtualDevice2";
-    }
 };
 
 struct LightU16Pair
@@ -105,8 +76,8 @@ class RAM
     void write(uint16_t address, uint8_t value)
     {
         auto& destination = map[address];
-        std::cout << "Try to write to " << destination.device->show_name() << std::endl;
-        std::cout << "Address: " << destination.address <<" Value: " << (int)value << std::endl;
+        //std::cout << "Try to write to " << destination.device->show_name() << std::endl;
+        //std::cout << "Address: " << destination.address <<" Value: " << (int)value << std::endl;
         destination.device->write(destination.address, value);
     }
 };
@@ -115,19 +86,24 @@ class RAM
 int main() {
     RAM ram;
     
-    RealVirtualDevice1 rvd1;
-    RealVirtualDevice2 rvd2;
+    Memory mem;
+    //$0000–$07FF	$0800	2 KB internal RAM
+    ram.connect(&mem, {0,0x7FF}, 0);
+    //mirroring
+    //$0800–$0FFF	$0800	Mirrors of $0000–$07FF
+    //$1000–$17FF	$0800
+    //$1800–$1FFF	$0800
+    ram.connect(&mem, {0x800,0x0FFF},   -0x800 );
+    ram.connect(&mem, {0x1000,0x17FF}, -0x1000);
+    ram.connect(&mem, {0x1800,0x1FFF}, -0x1800);
     
-    ram.connect(&rvd1, {0,19}, 0);
-    ram.connect(&rvd2, {20,39}, -20);
     
-    ram.write(20, 9);
-    ram.write(8, 1);
-    ram.write(19, 8);
-    ram.write(25, 254);
+    for(int i = 0x800; i < 0x1000; ++i)
+    {
+        ram.write(i, i);
+    }
     
-    rvd1.show_mem();
-    rvd2.show_mem();
+    mem.show_mem();
 
     return 0;
 }
