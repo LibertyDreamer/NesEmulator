@@ -1,9 +1,13 @@
 #include <iostream>
+#include "palette.h"
+#include "lightrai.h"
 
 using namespace std;
 
 int main()
 {
-    cout << "Hello World!" << endl;
+    LightRAI pallete(new Palette());
+
+
     return 0;
 }
