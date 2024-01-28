@@ -1,6 +1,6 @@
 #include <iostream>
 #include "palette.h"
-#include "lightrai.h"
+#include "light_rai.h"
 
 using namespace std;
 

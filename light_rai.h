@@ -1,5 +1,5 @@
-#ifndef LIGHTRAI_H
-#define LIGHTRAI_H
+#ifndef LIGHT_RAI_H
+#define LIGHT_RAI_H
 
 template<class C>
 class LightRAI
@@ -15,4 +15,4 @@ public:
     C* operator ->() { return obj;}
 };
 
-#endif // LIGHTRAI_H
+#endif // LIGHT_RAI_H
