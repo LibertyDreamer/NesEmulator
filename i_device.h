@@ -1,6 +1,8 @@
 #ifndef I_DEVICE_H
 #define I_DEVICE_H
 
+#include <inttypes.h>
+
 class IDevice
 {
 public:

@@ -16,12 +16,14 @@ class MemoryMapped
         IDevice* device;
         uint16_t address;
     } map[0xFFFF+1] = {};
-    public:
 
     void connect(IDevice* device, uint16_t from, uint16_t to)
     {
         map[from] = {device, to};
     }
+
+    public:
+
 
     void connect(IDevice* device, LightU16Pair from, uint16_t offset)
     {
